@@ -158,7 +158,6 @@ export function FinancialApp() {
       <div className="output-head"><Step n="03" title="図で確かめる" sub={`${visible.length}件を表示中`} /><div><button onClick={() => openSummary(svg())}>まとめて表示</button><button onClick={() => download(new Blob([svg()], { type: "image/svg+xml" }), "proportional-statements.svg")}>SVG</button><button className="primary" onClick={() => png(svg())}>PNGで保存</button></div></div>
       {view !== "single" && <div className="sheet-tabs" role="tablist" aria-label="比較する財務諸表"><button role="tab" aria-selected={shownSheet === "bs"} className={shownSheet === "bs" ? "active" : ""} onClick={() => setSheet("bs")}>貸借対照表（BS）</button><button role="tab" aria-selected={shownSheet === "pl"} className={shownSheet === "pl" ? "active" : ""} onClick={() => setSheet("pl")}>損益計算書（PL）</button></div>}
       <div className={`statements ${visible.length > 2 ? "many" : ""}`}>{visible.map(r => <StatementCard key={r.id} r={r} g={g} scale={scale} maxAssets={view === "single" ? singleCommonMax : maxAssets} maxSales={view === "single" ? singleCommonMax : maxSales} sheet={shownSheet} emphasizeYear={view === "timeline"} />)}</div>
-      <p className="hint">各ブロックにカーソルを合わせると、金額と構成比を確認できます。</p>
     </section></section>
     <section className="usage-notice" aria-labelledby="usage-notice-title">
       <h2 id="usage-notice-title">利用上の注意</h2>
