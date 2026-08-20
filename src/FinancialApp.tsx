@@ -169,7 +169,7 @@ export function FinancialApp() {
         <li>本サイトは著者が教育目的で公開するものであり、著者の所属機関による公式サービス、承認または内容保証を意味しません。</li>
       </ul>
     </section>
-    <footer>© 2026 Toru Ogasawara<span>比例縮尺財務諸表の作成Webサイト　<a href="./third-party-notices.txt">第三者ライセンス</a></span></footer>
+    <footer>© 2026 Toru Ogasawara<span>比例縮尺財務諸表の作成Webサイト　<a href="./LICENSE.txt">MIT License</a>　<a href="./third-party-notices.txt">第三者ライセンス</a></span></footer>
   </main>;
 }
 

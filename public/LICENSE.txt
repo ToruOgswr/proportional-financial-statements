@@ -1,18 +1,6 @@
-# Third-Party Notices
-
-本Webサイトの本番配布物には、次の第三者ソフトウェアが含まれます。各ソフトウェアには、それぞれのライセンスが適用されます。本プロジェクトの自作部分については、リポジトリの[`LICENSE`](LICENSE)に記載したMIT Licenseが適用されます。
-
-## React / React DOM
-
-- Software: React 19.2.8, React DOM 19.2.8
-- Project: https://react.dev/
-- Copyright: Copyright (c) Meta Platforms, Inc. and affiliates.
-- License: MIT License
-
-```text
 MIT License
 
-Copyright (c) Meta Platforms, Inc. and affiliates.
+Copyright (c) 2026 Toru Ogasawara
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,8 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-```
-
-## 開発用ソフトウェア
-
-TypeScript、Vite、Vitestその他の開発用依存関係は、Webサイトのソースからテストおよび公開用ファイルを生成するために使用します。これらは`package.json`および`pnpm-lock.yaml`に記録され、それぞれの配布元が定めるライセンスに従います。
