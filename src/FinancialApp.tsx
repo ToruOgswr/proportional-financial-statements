@@ -12,7 +12,7 @@ type Part = [string, number, string];
 const baseFields = [["流動資産", "currentAssets"], ["固定資産", "fixedAssets"], ["流動負債", "currentLiabilities"], ["固定負債", "fixedLiabilities"], ["純資産", "equity"]] as const;
 const highFields = [["現預金", "cash", false], ["売上債権", "receivables", false], ["棚卸資産", "inventory", false], ["その他の流動資産（自動）", "otherCurrentAssets", true], ["有形固定資産", "tangibleAssets", false], ["その他の固定資産（自動）", "otherFixedAssets", true], ["仕入債務", "payables", false], ["その他の流動負債（自動）", "otherCurrentLiabilities", true]] as const;
 
-const plFields = [["売上高", "sales"], ["売上原価", "costOfSales"], ["販売費及び一般管理費", "sga"], ["営業利益", "operatingProfit"]] as const;
+const plFields = [["売上高", "sales"], ["売上原価", "costOfSales"], ["販管費", "sga"], ["営業利益", "operatingProfit"]] as const;
 const colors: Record<string, string> = {
   cash: "#0B6FA4", receivables: "#3B9FC4", inventory: "#2A9D8F", otherCurrentAssets: "#67C5B5",
   tangibleAssets: "#625578", intangibleAssets: "#785878", otherFixedAssets: "#87617F",
@@ -26,7 +26,7 @@ const lightTextKeys = new Set(["cash", "tangibleAssets", "otherFixedAssets", "fi
 const csvColumns = [
   ["企業名", "company"], ["年度", "year"], ["単位", "unit"], ["流動資産", "currentAssets"],
   ["固定資産", "fixedAssets"], ["流動負債", "currentLiabilities"], ["固定負債", "fixedLiabilities"],
-  ["純資産", "equity"], ["売上高", "sales"], ["売上原価", "costOfSales"], ["販売費及び一般管理費", "sga"],
+  ["純資産", "equity"], ["売上高", "sales"], ["売上原価", "costOfSales"], ["販管費", "sga"],
   ["営業利益", "operatingProfit"], ["現預金", "cash"], ["売上債権", "receivables"],
   ["棚卸資産", "inventory"], ["その他の流動資産", "otherCurrentAssets"], ["有形固定資産", "tangibleAssets"],
   ["無形固定資産", "intangibleAssets"], ["その他の固定資産", "otherFixedAssets"], ["仕入債務", "payables"],
@@ -40,7 +40,7 @@ const highInputColumns = [
   ["有形固定資産", "tangibleAssets"],
   ["仕入債務", "payables"],
   ["純資産", "equity"], ["売上高", "sales"], ["売上原価", "costOfSales"],
-  ["販売費及び一般管理費", "sga"], ["営業利益", "operatingProfit"],
+  ["販管費", "sga"], ["営業利益", "operatingProfit"],
 ] as const;
 
 const csvAliases: readonly (readonly [string, keyof FinancialRecord])[] = [
@@ -51,7 +51,7 @@ const csvAliases: readonly (readonly [string, keyof FinancialRecord])[] = [
   ["受取手形及び売掛金", "receivables"], ["受取手形・売掛金", "receivables"],
   ["たな卸資産", "inventory"], ["棚卸し資産", "inventory"],
   ["有形固定資産合計", "tangibleAssets"], ["無形固定資産合計", "intangibleAssets"],
-  ["販管費", "sga"], ["その他流動資産", "otherCurrentAssets"], ["その他固定資産", "otherFixedAssets"],
+  ["販売費及び一般管理費", "sga"], ["その他流動資産", "otherCurrentAssets"], ["その他固定資産", "otherFixedAssets"],
   ["その他流動負債", "otherCurrentLiabilities"], ["その他固定負債", "otherFixedLiabilities"],
 ];
 
@@ -82,7 +82,7 @@ function BsChart({ r, g, normalized, height }: { r: FinancialRecord; g: Granular
 
 function PlChart({ r, normalized, height }: { r: FinancialRecord; normalized: boolean; height: number }) {
   if (r.sales <= 0) return <div className="empty-chart">売上高を入力してください</div>;
-  const costs: Part[] = [["売上原価", r.costOfSales, "costOfSales"], ["販売費及び一般管理費", r.sga, "sga"]];
+  const costs: Part[] = [["売上原価", r.costOfSales, "costOfSales"], ["販管費", r.sga, "sga"]];
   const isLoss = r.operatingProfit < 0;
   const total = isLoss ? r.sales + Math.abs(r.operatingProfit) : r.sales;
   return <div className="pl" style={{ height }}>
@@ -234,7 +234,7 @@ export function exportSvg(rs: FinancialRecord[], g: Granularity, scale: ScaleMod
       : `<text x="${x}" y="55" font-size="18" font-weight="700">${esc(r.company)}</text><text x="${x}" y="78" font-size="12">${esc(r.year)}年度・${r.unit}</text>`;
     const block = (label: string, n: number, t: number, chartHeight: number, xx: number, yy: number, color: string, key = "") => { const h = Math.abs(n) / Math.max(1, t) * chartHeight; const textColor = lightTextKeys.has(key) ? "#FFFFFF" : "#17212B"; return [`<rect x="${xx}" y="${yy}" width="92" height="${h}" fill="${color}" stroke="#17212B"/><text x="${xx + 4}" y="${yy + Math.min(16, Math.max(10, h - 3))}" font-size="9" fill="${textColor}">${label}</text>`, h] as const; };
     if (sheet !== "pl") { const assetParts: Part[] = g === "medium" ? [["流動資産", a.currentAssets, "currentAssets"], ["固定資産", a.fixedAssets, "fixedAssets"]] : [["現預金", d.cash, "cash"], ["売上債権", d.receivables, "receivables"], ["棚卸資産", d.inventory, "inventory"], ["その他の流動資産", d.otherCurrentAssets, "otherCurrentAssets"], ["有形固定資産", d.tangibleAssets, "tangibleAssets"], ["その他の固定資産", d.otherFixedAssets, "otherFixedAssets"]]; const debtParts: Part[] = g === "medium" ? [["流動負債", a.currentLiabilities, "currentLiabilities"], ["固定負債", a.fixedLiabilities, "fixedLiabilities"]] : [["仕入債務", d.payables, "payables"], ["その他の流動負債", d.otherCurrentLiabilities, "otherCurrentLiabilities"], ["固定負債", d.fixedLiabilities, "fixedLiabilities"]]; for (const p of assetParts) { const [q, h] = block(p[0], p[1], v.assets, bsHeight, x, ly, colors[p[2]], p[2]); s += q; ly += h; } for (const p of [...debtParts, [d.equity < 0 ? "債務超過" : "純資産", d.equity, d.equity < 0 ? "loss" : "equity"] as Part]) { const [q, h] = block(p[0], p[1], total, bsHeight, x + 92, ry, colors[p[2]], p[2]); s += q; ry += h; } }
-    if (sheet !== "bs") { const plX = sheet === "both" ? x + 196 : x; const isLoss = r.operatingProfit < 0; const leftParts: Part[] = [["売上原価", r.costOfSales, "costOfSales"], ["販売費及び一般管理費", r.sga, "sga"]]; if (!isLoss) leftParts.push(["営業利益", r.operatingProfit, "operatingProfit"]); for (const p of leftParts) { const [q, h] = block(p[0], p[1], plTotal, plHeight, plX, py, colors[p[2]], p[2]); s += q; py += h; } let salesY = bottom - plHeight; const [sales, salesHeight] = block("売上高", r.sales, plTotal, plHeight, plX + 92, salesY, "#E5E7EB"); s += sales; salesY += salesHeight; if (isLoss) { const [loss] = block("営業損失", r.operatingProfit, plTotal, plHeight, plX + 92, salesY, colors.loss, "loss"); s += loss; } }
+    if (sheet !== "bs") { const plX = sheet === "both" ? x + 196 : x; const isLoss = r.operatingProfit < 0; const leftParts: Part[] = [["売上原価", r.costOfSales, "costOfSales"], ["販管費", r.sga, "sga"]]; if (!isLoss) leftParts.push(["営業利益", r.operatingProfit, "operatingProfit"]); for (const p of leftParts) { const [q, h] = block(p[0], p[1], plTotal, plHeight, plX, py, colors[p[2]], p[2]); s += q; py += h; } let salesY = bottom - plHeight; const [sales, salesHeight] = block("売上高", r.sales, plTotal, plHeight, plX + 92, salesY, "#E5E7EB"); s += sales; salesY += salesHeight; if (isLoss) { const [loss] = block("営業損失", r.operatingProfit, plTotal, plHeight, plX + 92, salesY, colors.loss, "loss"); s += loss; } }
     return s;
   }).join("");
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="430" viewBox="0 0 ${W} 430"><rect width="100%" height="100%" fill="#f6f3eb"/><text x="35" y="25" font-family="sans-serif" font-size="13">比例縮尺財務諸表｜${sheet === "bs" ? "BS" : sheet === "pl" ? "PL" : "BS・PL"}｜${scale === "actual" ? "実額" : "標準化"}・${g === "medium" ? "中" : "高"}粒度</text><g font-family="sans-serif" fill="#173530">${parts}</g></svg>`;
